@@ -1,7 +1,22 @@
+# Serving On demand Machine Learning Models utilizing MLflow
 
-# Contributing
+A sample for on-demand serving of Machine Learning models, using [MLFlow](https://docs.azuredatabricks.net/applications/mlflow/index.html) as the lifecycle platform and [Azure Databricks](https://docs.azuredatabricks.net/getting-started/index.html) for training models and hosting MLflow.
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+## Architecture
+
+The sample consist of 2 separate services, that communicate over REST APIs. The services are deployed on an Azure Kubernetes Cluster.
+
+![Architecture Diagram](images/architecture.png)
+
+### Prediction Service
+
+## How to run locally
+
+## Deployment
+
+## Contributing
+
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.microsoft.com.
 

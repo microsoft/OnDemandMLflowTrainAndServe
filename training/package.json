@@ -1,0 +1,36 @@
+{
+    "name": "training-service",
+    "version": "1.0.0",
+    "description": "Training Service",
+    "main": "app/app.js",
+    "scripts": {
+        "lint": "eslint \"./**/*.js\"",
+        "pretest": "npm run lint",
+        "test": "cross-env NODE_ENV=test mocha --exit tests/training-route.test.js",
+        "start": "node app/app.js"
+    },
+    "author": "raabusal@microsoft.com",
+    "license": "ISC",
+    "dependencies": {
+        "applicationinsights": "^1.3.1",
+        "body-parser": "^1.18.3",
+        "dotenv": "^7.0.0",
+        "express": "^4.16.4",
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
+        "validator": "^10.11.0",
+        "winston": "^3.2.1"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "cross-env": "^5.2.0",
+        "eslint": "^5.16.0",
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-plugin-import": "^2.16.0",
+        "eslint-plugin-prettier": "^3.0.1",
+        "mocha": "^6.1.4",
+        "prettier": "^1.16.4",
+        "proxyquire": "^2.1.0",
+        "supertest": "^4.0.2"
+    }
+}

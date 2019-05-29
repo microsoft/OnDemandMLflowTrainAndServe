@@ -1,0 +1,27 @@
+###########################################################
+# Build for testing
+
+FROM node:8.6-alpine as tester
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm install && npm test
+
+
+###########################################################
+# Build for running
+
+FROM node:8.6-alpine
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install --only=production
+
+COPY . .
+
+CMD ["npm", "start"]

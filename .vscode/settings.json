@@ -1,0 +1,8 @@
+{
+    "editor.formatOnSave": true,
+    "prettier.singleQuote": true,
+    "prettier.eslintIntegration": true,
+    "prettier.tabWidth": 4,
+    "python.linting.pylintEnabled": true,
+    "cSpell.words": ["Databricks"]
+}

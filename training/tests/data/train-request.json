@@ -1,0 +1,7 @@
+{
+    "modelType": "TYPE1",
+    "parameters": {
+        "par1": "val1",
+        "par2": "val2"
+    }
+}
