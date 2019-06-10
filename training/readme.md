@@ -14,14 +14,14 @@ New requests for training are treated with the following steps:
 
     ```json
     {
-        "modelType": "SALES",
+        "modelType": "MODEL",
         "parameters": {
             // Parameters key-values
         }
     }
     ```
 
-1. Retrieve the notebook path in Databricks according to the `modelType` (which in our case is 'SALES').
+1. Retrieve the notebook path in Databricks according to the `modelType` (which in our case is 'MODEL').
     > Note: `modelType` -> 'Databricks notebook path' mappings are described in the json value of the `DATABRICKS_TYPE_MAPPING` environment variable.
 1. Start the Databricks cluster if it is in 'TERMINATED' state.
 1. Send a request to the Databricks to run the notebook with the specified parameters.
