@@ -4,11 +4,15 @@ A sample for on-demand serving of Machine Learning models, using [MLFlow](https:
 
 ## Architecture
 
-The sample consist of 2 separate services, that communicate over REST APIs. The services are deployed on an Azure Kubernetes Cluster.
+The sample consist of 3 separate services, that communicate over REST APIs. The services are deployed on an Azure Kubernetes Cluster.
 
 ![Architecture Diagram](images/architecture.png)
 
-### Prediction Service
+**[Prediction Service](prediction/README.md)**
+
+**[Training Service](training/README.md)**
+
+**[Model Runner](model-runner/REDAME.md)**
 
 ## How to run locally
 

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.training.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.training.name }}
+      tier: backend
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.training.name }}
+        tier: backend
+    spec:
+      containers:
+        - name: {{ .Values.training.name }}
+          image: "{{ .Values.repository }}/{{ .Values.training.image.name }}:{{ .Values.imagesTag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80          
+          env:
+            - name: SERVICE_NAME
+              value: {{ .Values.training.name }}
+            - name: PORT
+              value: "80"
+            - name: DATABRICKS_WORKSPACE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DATABRICKS_WORKSPACE_URL
+            - name: DATABRICKS_CLUSTER_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: training-config
+                  key: DATABRICKS_CLUSTER_ID
+            - name: DATABRICKS_RUN_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: training-config
+                  key: DATABRICKS_RUN_TIMEOUT
+            - name: DATABRICKS_TYPE_MAPPING
+              valueFrom:
+                configMapKeyRef:
+                  name: training-config
+                  key: DATABRICKS_TYPE_MAPPING
+            - name: APP_INSIGHTS_INSTRUMENTATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: APP_INSIGHTS_INSTRUMENTATION_KEY
+            - name: DATABRICKS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: global-secrets
+                  key: DATABRICKS_AUTH_TOKEN

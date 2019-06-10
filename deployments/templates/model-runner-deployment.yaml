@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.salesModelRunner.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.salesModelRunner.name }}
+      tier: backend
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.salesModelRunner.name }}
+        tier: backend
+    spec:
+      containers:
+        - name: {{ .Values.salesModelRunner.dockerImageName }}
+          image: "{{ .Values.repository }}/{{ .Values.salesModelRunner.dockerImageName }}:{{ .Values.imagesTag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 3
+          env:
+            - name: SERVICE_NAME
+              value: {{ .Values.salesModelRunner.name }}
+            - name: MLFLOW_SERVER_API_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: MLFLOW_SERVER_API_PREFIX
+            - name: MLFLOW_SERVER_SEARCH_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MLFLOW_SERVER_SEARCH_PATH
+            - name: MLFLOW_EXPERIMENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MLFLOW_EXPERIMENT_ID
+            - name: MLFLOW_REQUESTS_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MLFLOW_REQUESTS_TIMEOUT
+            - name: MODELS_RELATIVE_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MODELS_RELATIVE_PATH
+            - name: MODEL_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MODEL_NAME
+            - name: MODEL_PREDICTION_PARAMETERS_TRANSLATION
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MODEL_PREDICTION_PARAMETERS_TRANSLATION
+            - name: PREDICTION_PARAMETERS_TYPES
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: PREDICTION_PARAMETERS_TYPES
+            - name: MODEL_TRAINING_PARAMETERS
+              valueFrom:
+                configMapKeyRef:
+                  name: sales-model-runner-config
+                  key: MODEL_TRAINING_PARAMETERS
+            - name: APP_INSIGHTS_INSTRUMENTATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: APP_INSIGHTS_INSTRUMENTATION_KEY
+            - name: DATABRICKS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: DATABRICKS_WORKSPACE_URL
+            - name: DATABRICKS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: global-secrets
+                  key: DATABRICKS_AUTH_TOKEN

@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.prediction.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.prediction.name }}
+      tier: backend
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.prediction.name }}
+        tier: backend
+    spec:
+      containers:
+        - name: {{ .Values.prediction.name }}
+          image: "{{ .Values.repository }}/{{ .Values.prediction.image.name }}:{{ .Values.imagesTag }}"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+          env:
+            - name: TRAINING_SERVICE_HOST
+              value: {{ printf "http://%s-service" .Values.training.name }}
+            - name: SALES_MODEL_SERVICE_HOST
+              value: {{ printf "http://%s-service" .Values.salesModelRunner.name }}
+            - name: SERVICE_NAME
+              value: {{ .Values.prediction.name }}
+            - name: TRAINING_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: TRAINING_SERVICE_PORT
+            - name: TRAINING_SERVICE_API_TRAIN_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: TRAINING_SERVICE_API_TRAIN_PATH
+            - name: TRAINING_REQUESTS_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: TRAINING_REQUESTS_TIMEOUT
+            - name: SALES_MODEL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: SALES_MODEL_SERVICE_PORT
+            - name: PREDICTION_URL_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: PREDICTION_URL_PATH
+            - name: TRAINING_PAYLOAD_URL_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: TRAINING_PAYLOAD_URL_PATH
+            - name: MODEL_SERVICE_REQUESTS_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: prediction-config
+                  key: MODEL_SERVICE_REQUESTS_TIMEOUT
+            - name: APP_INSIGHTS_INSTRUMENTATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: APP_INSIGHTS_INSTRUMENTATION_KEY

@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.training.name }}-config
+data:
+  DATABRICKS_CLUSTER_ID: {{ .Values.training.DATABRICKS_CLUSTER_ID | quote }}
+  DATABRICKS_RUN_TIMEOUT: {{ .Values.training.DATABRICKS_RUN_TIMEOUT | quote }}
+  DATABRICKS_TYPE_MAPPING: {{ .Values.training.DATABRICKS_TYPE_MAPPING | quote }}
