@@ -36,10 +36,12 @@ class PredictionService:
         except requests.exceptions.ConnectionError:
             return TrainingResponse(None, JobStatus.ERROR.value, "failed connecting to training service")
 
-
     def train_new_model(self, model_type, parameters):
         try:
-            payload = self.get_training_payload(parameters, model_type)
+            payload = {
+                "modelType": model_type,
+                "parameters": parameters
+            }
             training_response = requests.post(self.training_url,
 
                                               data=json.dumps(payload),
@@ -62,14 +64,6 @@ class PredictionService:
         return self.mlflow_models_mapping[model_type_name]['model_service_host'] + ':' + str(
             self.mlflow_models_mapping[model_type_name]['model_service_port'])
 
-    def get_training_payload(self, parameters, model_type):
-        models_full_config = self.mlflow_models_mapping
-        model_url = self.get_model_url(model_type) + models_full_config['training_payload_url_path']
-        model_response = requests.post(model_url, data=json.dumps(parameters), headers={
-            'content-type': 'application/json'}, timeout=models_full_config['timeout']).json()
-
-        return model_response
-
     def get_prediction(self, params, model_type):
         models_full_config = self.mlflow_models_mapping
         model_url = self.get_model_url(model_type) + models_full_config['prediction_url_path']
@@ -78,9 +72,8 @@ class PredictionService:
         return model_response
 
     @staticmethod
-    def build_prediction_response(run_id, status, status_message, results, probability):
-        return {'runId': run_id, 'status': status, 'statusMessage': status_message, 'result': results,
-                'probability': probability}
+    def build_prediction_response(run_id, status, status_message, results):
+        return {'runId': run_id, 'status': status, 'statusMessage': status_message, 'result': results}
 
     def run_flask_server(self, port, host):
         """Run the flask server."""
@@ -101,7 +94,8 @@ class PredictionService:
         @app.route('/predict', methods=['POST'])
         def get_prediction():
             body = request.get_json()
-            request_parameters = body['parameters']
+            model_parameters = body['modelParameters']
+            prediction_parameters = body['predictionParameters']
             run_id = body.get('runId')
             model_type_name = body.get('modelType')
             if run_id is not None:
@@ -115,7 +109,7 @@ class PredictionService:
                                                        training_response.status_message,
                                                        [], {}))
                 else:
-                    model_response = self.get_prediction(request_parameters, model_type_name)
+                    model_response = self.get_prediction(prediction_parameters, model_type_name)
                     if model_response['status'] == 'error':
                         response = json.dumps(self.build_prediction_response(run_id, JobStatus.ERROR.value,
                                                                              model_response['statusMessage'],
@@ -124,16 +118,16 @@ class PredictionService:
                         response = json.dumps(
                             self.build_prediction_response(run_id, JobStatus.COMPLETED.value,
                                                            None,
-                                                           model_response['result'], model_response['probability']))
+                                                           model_response['result']))
             else:
                 # if the job is None
                 # since the simulation service is unaware of model and prediction parameters separation
                 # two options are possible: first train a new model
                 # second if the change in the ui was only on prediction parameters, maybe we already trained that model
-                model_response = self.get_prediction(request_parameters, model_type_name)
+                model_response = self.get_prediction(prediction_parameters, model_type_name)
                 if model_response['status'] == 'error':
                     training_response = self.train_new_model(
-                        body['modelType'], request_parameters)
+                        body['modelType'], model_parameters)
                     response = json.dumps(
                         self.build_prediction_response(training_response.run_id, training_response.status,
                                                        training_response.status_message,
@@ -142,7 +136,7 @@ class PredictionService:
                     response = json.dumps(
                         self.build_prediction_response(run_id, JobStatus.COMPLETED.value,
                                                        None,
-                                                       model_response['result'], model_response['probability']))
+                                                       model_response['result']))
 
             return response
 
