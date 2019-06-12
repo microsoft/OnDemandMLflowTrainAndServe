@@ -6,12 +6,7 @@ mlflow_config = {
     'databricks_host': 'databricks.host.com',
     'models_relative_path': 'model_path',
     'model_name': 'ModelName',
-    'timeout': 10,
-    "model_training_parameters": {"string_param": "string", "float_param": "float"},
-    "model_prediction_parameters_translation": {"date": "ds", "productPrice": "price",
-                                                "competitorPrice": "competitor_price"},
-    "prediction_parameters_types": {"date": "date", "productPrice": "int",
-                                    "competitorPrice": "int"},
+    'timeout': 10
 }
 service_config = {
     "appinsights_key": "APP_INSIGHTS_INSTRUMENTATION_KEY",

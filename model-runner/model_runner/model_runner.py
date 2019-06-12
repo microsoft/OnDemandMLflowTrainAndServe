@@ -25,8 +25,6 @@ class ModelRunner:
     def __init__(self, mlflow_config, service_config):
         self.mlflow_config = mlflow_config
         self.service_config = service_config
-        self.model_parameters_types = mlflow_config['model_training_parameters']
-        self.model_parameters = [*self.model_parameters_types]
         self.mlflow_api_url = mlflow_config['databricks_host'] + mlflow_config['api_prefix']
         self.databricks_request_headers = {'content-type': 'application/json',
                                            'Authorization': 'Bearer ' + mlflow_config[
@@ -41,37 +39,14 @@ class ModelRunner:
         experiment_ids = [self.mlflow_config['mlflow_experiment_id']]
         payload = {'experiment_ids': experiment_ids}
         parameters_data = []
-        for param in self.model_parameters:
-            if param in params:
-                # float parameter can be int, but mlflow logs it as a float
-                # to find the model convert the outlier parameter to float
-                if self.model_parameters_types[param] == 'float':
-                    parameters_data.append("params." + param + " = " + str(float(params[param])))
-                else:
-                    parameters_data.append("params." + param + " = " + repr(str(params[param])))
+        for param in params:
+            if type(params[param]) in [float, int]:
+                parameters_data.append("params." + param + " = " + str((params[param])))
+            else:
+                parameters_data.append("params." + param + " = " + repr(str(params[param])))
 
         payload['filter'] = " and ".join(parameters_data)
         return payload
-
-    def build_training_payload(self, parameters):
-        payload = {'modelType': self.mlflow_config['model_name'], 'parameters': {}}
-
-        for param in self.model_parameters:
-            if param in parameters:
-                payload['parameters'][param] = parameters[param]
-
-        return payload
-
-    def get_prediction_parameters(self, params):
-        result = {}
-        prediction_parameters_translation = self.mlflow_config['model_prediction_parameters_translation']
-        for param in params:
-            if self.mlflow_config['prediction_parameters_types'][param] == 'date':
-                translated_param = prediction_parameters_translation[param]
-                result[translated_param] = datetime.fromisoformat(params[param][:-1])
-            else:
-                result[prediction_parameters_translation[param]] = params[param]
-        return result
 
     def search_model(self, parameters):
         latest_run = None
@@ -96,7 +71,6 @@ class ModelRunner:
             os.makedirs(local_output_path)
         except FileExistsError:
             return local_output_path
-
         # next we download the model
         # since this function does not receive a local output path
         # it downloads the artifacts to a "random" directory under /var/folders/ and returns the path to it
@@ -117,35 +91,14 @@ class ModelRunner:
 
         model = model_type.load_model(self.get_model_path(run_id))
 
-        # build payload for prediction
-        input_data = []
-
-        input_parameters = parameters['inputData']
-
-        for param in input_parameters:
-            input_data.append(self.get_prediction_parameters(param))
-
         model_results = model.predict(
-            pandas.DataFrame(data=input_data))
+            pandas.DataFrame(data=parameters, index=[0]))
 
-        # Parse model results
-        probability = model_results[1]
-        # rename keys to match expected result by the ui
-        probability['binsEdges'] = probability.pop('bins_edges').tolist()
-        probability['probabilities'] = probability.pop('probability').tolist()
-
-        output_data = model_results[0].iterrows()
-        results = []
-        # pylint: disable=unused-variable
-        for index, row in output_data:
-            results.append({'date': row['ds'].strftime(self.date_time_format), 'salesVolume': row['yhat']})
-
-        return {'results': results, 'probability': probability}
+        return model_results
 
     @staticmethod
-    def build_prediction_response(status, status_message, results, probability):
-        return {'status': status, 'statusMessage': status_message, 'result': results,
-                'probability': probability}
+    def build_prediction_response(status, status_message, results):
+        return {'status': status, 'statusMessage': status_message, 'result': results}
 
     def run_flask_server(self, port, host):
         """Run the flask server."""
@@ -164,8 +117,8 @@ class ModelRunner:
 
         @app.route('/predict', methods=['POST'])
         def get_prediction():
-            request_parameters = request.get_json()
-            latest_run = self.search_model(request_parameters)
+            request_body = request.get_json()
+            latest_run = self.search_model(request_body['modelParameters'])
             if latest_run is None:
                 response = json.dumps(
                     self.build_prediction_response("error",
@@ -175,16 +128,11 @@ class ModelRunner:
                 self.download_model(
                     latest_run['info']['run_uuid'])
                 model_result = self.load_and_predict(latest_run['info']['run_uuid'],
-                                                     request_parameters)
+                                                     request_body['predictionParameters'])
                 response = json.dumps(
                     self.build_prediction_response("success",
                                                    None,
-                                                   model_result['results'], model_result['probability']))
+                                                   model_result.tolist()))
             return response
-
-        @app.route('/training_payload', methods=['POST'])
-        def get_training_payload():
-            body = request.get_json()
-            return json.dumps(self.build_training_payload(body))
 
         app.run(port=port, host=host)
