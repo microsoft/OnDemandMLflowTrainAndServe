@@ -95,7 +95,6 @@ class PredictionService:
         def get_prediction():
             body = request.get_json()
             model_parameters = body['modelParameters']
-            prediction_parameters = body['predictionParameters']
             run_id = body.get('runId')
             model_type_name = body.get('modelType')
             if run_id is not None:
@@ -109,7 +108,7 @@ class PredictionService:
                                                        training_response.status_message,
                                                        [], {}))
                 else:
-                    model_response = self.get_prediction(prediction_parameters, model_type_name)
+                    model_response = self.get_prediction(body, model_type_name)
                     if model_response['status'] == 'error':
                         response = json.dumps(self.build_prediction_response(run_id, JobStatus.ERROR.value,
                                                                              model_response['statusMessage'],
@@ -124,7 +123,7 @@ class PredictionService:
                 # since the simulation service is unaware of model and prediction parameters separation
                 # two options are possible: first train a new model
                 # second if the change in the ui was only on prediction parameters, maybe we already trained that model
-                model_response = self.get_prediction(prediction_parameters, model_type_name)
+                model_response = self.get_prediction(body, model_type_name)
                 if model_response['status'] == 'error':
                     training_response = self.train_new_model(
                         body['modelType'], model_parameters)

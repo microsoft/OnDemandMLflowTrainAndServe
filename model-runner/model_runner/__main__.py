@@ -8,6 +8,6 @@ model_handler = ModelRunner(mlflow_config, service_config)
 if __name__ == '__main__':
     env = os.getenv('ENVIRONMENT')
     if env is None or env == 'production':
-        model_handler.run_flask_server(port=3003, host='0.0.0.0')
+        model_handler.run_flask_server(port=80, host='0.0.0.0')
     if env == 'local':
         model_handler.run_flask_server(port=3003, host='0.0.0.0')

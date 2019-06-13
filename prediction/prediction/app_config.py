@@ -10,7 +10,7 @@ training_service_config = {
     "appinsights_key": env("APP_INSIGHTS_INSTRUMENTATION_KEY")
 }
 
-mlflow_models_mapping = env.dict('MLFLOW_MODELS_MAPPING')
+mlflow_models_mapping = env.json('MLFLOW_MODELS_MAPPING')
 prediction_config = {
     "service_name": env("SERVICE_NAME")
 }
