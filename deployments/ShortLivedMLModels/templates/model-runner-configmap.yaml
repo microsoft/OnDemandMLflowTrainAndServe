@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.modelRunner.name }}-config
+data:
+  MLFLOW_SERVER_API_PREFIX: {{ .Values.global.MLFLOW_SERVER_API_PREFIX | quote }}
+  MLFLOW_SERVER_SEARCH_PATH: {{ .Values.modelRunner.MLFLOW_SERVER_SEARCH_PATH | quote }}
+  MLFLOW_EXPERIMENT_ID: {{ .Values.modelRunner.MLFLOW_EXPERIMENT_ID | quote }}
+  MLFLOW_REQUESTS_TIMEOUT: {{ .Values.modelRunner.MLFLOW_REQUESTS_TIMEOUT | quote }}
+  MODELS_RELATIVE_PATH: {{ .Values.modelRunner.MODELS_RELATIVE_PATH | quote }}
+  MODEL_NAME: {{ .Values.modelRunner.MODEL_NAME | quote }}
+  MODEL_TRAINING_PARAMETERS: {{ .Values.modelRunner.MODEL_TRAINING_PARAMETERS | quote }}
+  MODEL_PREDICTION_PARAMETERS_TRANSLATION: {{ .Values.modelRunner.MODEL_PREDICTION_PARAMETERS_TRANSLATION | quote }}
+  PREDICTION_PARAMETERS_TYPES: {{ .Values.modelRunner.PREDICTION_PARAMETERS_TYPES | quote }}

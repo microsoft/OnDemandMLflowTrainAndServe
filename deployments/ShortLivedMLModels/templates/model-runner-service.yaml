@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.salesModelRunner.name }}-service
+  name: {{ .Values.modelRunner.name }}-service
 spec:
   selector:
-    app: {{ .Values.salesModelRunner.name }}
+    app: {{ .Values.modelRunner.name }}
     tier: backend
   ports:
   - port: 80

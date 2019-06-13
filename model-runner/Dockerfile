@@ -2,7 +2,6 @@ FROM python:3.7.3-slim AS base
 
 ARG NAME=model_runner
 WORKDIR /usr/bin/${NAME}
-COPY *.whl ${WORKDIR}
 ADD ./${NAME} ${WORKDIR}
 
 COPY requirements.txt ${WORKDIR}

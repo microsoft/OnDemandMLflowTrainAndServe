@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.training.name }}
-          image: "{{ .Values.repository }}/{{ .Values.training.image.name }}:{{ .Values.imagesTag }}"
+          image: "{{ .Values.repository }}/{{ .Values.training.dockerImage.name }}:{{ .Values.imagesTag }}"
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -42,17 +42,17 @@ spec:
             - name: DATABRICKS_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:
-                  name: training-config
+                  name: {{ .Values.training.name }}-config
                   key: DATABRICKS_CLUSTER_ID
             - name: DATABRICKS_RUN_TIMEOUT
               valueFrom:
                 configMapKeyRef:
-                  name: training-config
+                  name: {{ .Values.training.name }}-config
                   key: DATABRICKS_RUN_TIMEOUT
             - name: DATABRICKS_TYPE_MAPPING
               valueFrom:
                 configMapKeyRef:
-                  name: training-config
+                  name: {{ .Values.training.name }}-config
                   key: DATABRICKS_TYPE_MAPPING
             - name: APP_INSIGHTS_INSTRUMENTATION_KEY
               valueFrom:

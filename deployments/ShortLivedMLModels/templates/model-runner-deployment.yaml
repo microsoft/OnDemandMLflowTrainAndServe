@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.salesModelRunner.name }}
+  name: {{ .Values.modelRunner.name }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.salesModelRunner.name }}
+      app: {{ .Values.modelRunner.name }}
       tier: backend
   replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: {{ .Values.salesModelRunner.name }}
+        app: {{ .Values.modelRunner.name }}
         tier: backend
     spec:
       containers:
-        - name: {{ .Values.salesModelRunner.dockerImageName }}
-          image: "{{ .Values.repository }}/{{ .Values.salesModelRunner.dockerImageName }}:{{ .Values.imagesTag }}"
+        - name: {{ .Values.modelRunner.name }}
+          image: "{{ .Values.repository }}/{{ .Values.modelRunner.dockerImage.name }}:{{ .Values.imagesTag }}"
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -33,7 +33,7 @@ spec:
             periodSeconds: 3
           env:
             - name: SERVICE_NAME
-              value: {{ .Values.salesModelRunner.name }}
+              value: {{ .Values.modelRunner.name }}
             - name: MLFLOW_SERVER_API_PREFIX
               valueFrom:
                 configMapKeyRef:
@@ -42,42 +42,42 @@ spec:
             - name: MLFLOW_SERVER_SEARCH_PATH
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MLFLOW_SERVER_SEARCH_PATH
             - name: MLFLOW_EXPERIMENT_ID
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MLFLOW_EXPERIMENT_ID
             - name: MLFLOW_REQUESTS_TIMEOUT
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MLFLOW_REQUESTS_TIMEOUT
             - name: MODELS_RELATIVE_PATH
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MODELS_RELATIVE_PATH
             - name: MODEL_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MODEL_NAME
             - name: MODEL_PREDICTION_PARAMETERS_TRANSLATION
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MODEL_PREDICTION_PARAMETERS_TRANSLATION
             - name: PREDICTION_PARAMETERS_TYPES
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: PREDICTION_PARAMETERS_TYPES
             - name: MODEL_TRAINING_PARAMETERS
               valueFrom:
                 configMapKeyRef:
-                  name: sales-model-runner-config
+                  name: {{ .Values.modelRunner.name }}-config
                   key: MODEL_TRAINING_PARAMETERS
             - name: APP_INSIGHTS_INSTRUMENTATION_KEY
               valueFrom:
