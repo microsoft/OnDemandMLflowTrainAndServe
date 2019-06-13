@@ -41,17 +41,6 @@ class PredictionServiceTest(unittest.TestCase):
         assert self.prediction_service.check_training_status(run_id).status == JobStatus.COMPLETED.value
         assert self.prediction_service.check_training_status(run_id).status_message is None
 
-    # test get_training_payload function
-    def mocked_training_payload_response(*args, **kwargs):
-        if args[0] == 'http://model-handler-host:3002/training_payload':
-            return MockResponse({'param1': 'value'}, 200)
-        return MockResponse(None, 404)
-
-    # it should return only the relevant parameters
-    @mock.patch('requests.post', side_effect=mocked_training_payload_response)
-    def test_get_training_payload(self, mock):
-        assert self.prediction_service.get_training_payload({'param1': 'value', 'param2': 'values'}, 'model-type') == {
-            'param1': 'value'}
 
     # test get_prediction function
     def mocked_prediction_response(*args, **kwargs):

@@ -12,59 +12,13 @@ class ModelRunnerTest(unittest.TestCase):
     mlflow_tracking_server_erl = model_handler.mlflow_api_url
     run_id = "SomeRunID"
 
-    # def test_build_prediction_payload_when_no_model_params(self):
-    #     params = {"param": "value"}
-    #     assert self.model_handler.build_prediction_payload(params) == \
-    #            {'experiment_ids': [121212],
-    #             'anded_expressions': []}
-    #
-    # def test_build_prediction_payload_with_model_params(self):
-    #     model_params = {}
-    #     for param in self.model_handler.model_parameters:
-    #         if self.model_handler.model_parameters_types[param] == 'float':
-    #             # should be converted later to float
-    #             model_params[param] = 1
-    #         else:
-    #             model_params[param] = 'param'
-    #     assert \
-    #         self.model_handler.build_prediction_payload(model_params) == {'experiment_ids': [121212],
-    #                                                                       'anded_expressions': [
-    #                                                                           {'parameter': {'key': 'string_param',
-    #                                                                                          'string': {
-    #                                                                                              'comparator': '=',
-    #                                                                                              'value': 'param'}}},
-    #                                                                           {'parameter': {'key': 'float_param',
-    #                                                                                          'string': {
-    #                                                                                              'comparator': '=',
-    #                                                                                              'value': 1.0}}}]
-    #                                                                       }
-    #
-    # def test_build_training_payload(self):
-    #     parameters = {}
-    #     # empty parameters shouldn't fail and pass as empty
-    #     assert self.model_handler.build_training_payload(parameters) == {'modelType': 'ModelName', 'parameters': {}}
-    #     # all model parameters should be in the payload and non model parameters should be excluded
-    #     parameters = {"string_param": "string", "float_param": 1.0, 'non_model_training_param': 'some_value'}
-    #     assert self.model_handler.build_training_payload(parameters) == {'modelType': 'ModelName',
-    #                                                                      'parameters': {"string_param": "string",
-    #                                                                                     "float_param": 1.0}}
-
-    def test_get_prediction_parameters_for_date(self):
-        prediction_params = {'date': '2019-05-01T12:20:09.925Z'}
-        assert self.model_handler.get_prediction_parameters(prediction_params) == {
-            'ds': datetime.fromisoformat(prediction_params['date'][:-1])}
-
-    def test_get_prediction_parameters_for_productPrice(self):
-        prediction_params = {'productPrice': 17.17}
-        assert self.model_handler.get_prediction_parameters(prediction_params) == {'price':
-                                                                                       prediction_params[
-                                                                                           'productPrice']}
-
-    def test_get_prediction_parameters_for_competitorPrice(self):
-        prediction_params = {'competitorPrice': 17.17}
-        assert self.model_handler.get_prediction_parameters(prediction_params) == {'competitor_price':
-                                                                                       prediction_params[
-                                                                                           'competitorPrice']}
+    def test_build_prediction_payload_with_model_params(self):
+        model_params = {"string_param": "value", "int_param": 1}
+        assert \
+            self.model_handler.build_prediction_payload(model_params) == {'experiment_ids': [121212],
+                                                                          'filter':
+                                                                              "params.string_param = 'value' and params.int_param = 1"
+                                                                          }
 
     def mocked_mlflow_search_models_response(*args, **kwargs):
         class MockResponse:
