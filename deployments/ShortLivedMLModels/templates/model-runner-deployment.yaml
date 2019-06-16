@@ -64,16 +64,6 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.modelRunner.name }}-config
                   key: MODEL_NAME
-            - name: MODEL_PREDICTION_PARAMETERS_TRANSLATION
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
-                  key: MODEL_PREDICTION_PARAMETERS_TRANSLATION
-            - name: PREDICTION_PARAMETERS_TYPES
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
-                  key: PREDICTION_PARAMETERS_TYPES
             - name: MODEL_TRAINING_PARAMETERS
               valueFrom:
                 configMapKeyRef:

@@ -1,6 +1,6 @@
 # Prediction Service
 
-This service deals with all model serving aspects:  searching for a model run, downloading , loading and getting a prediction. 
+This service serves as a router to route the prediction request or  ask for new training or status check if no trained model is available.
 
 # Prerequisite requirements
 
@@ -19,12 +19,13 @@ TRAINING_SERVICE_PORT=<Training service port>
 TRAINING_SERVICE_API_TRAIN_PATH=<training service api path to train and check status for models>
 TRAINING_REQUESTS_TIMEOUT=<integer value for request to timeout when calling training service api>
 MLFLOW_REQUESTS_TIMEOUT=<integer value for request to timeout when calling mlflow api>
-SALES_MODEL_SERVICE_HOST=<Sales model serving host>
-SALES_MODEL_SERVICE_PORT=<Sales model port>
-PREDICTION_URL_PATH=<model handler service api path for prediction>
-TRAINING_PAYLOAD_URL_PATH=<model handler service api path for recieving training payload for the model>
-MODEL_SERVICE_REQUESTS_TIMEOUT=<integer value for request to timeout when calling model handler api>
-
+MLFLOW_MODELS_MAPPING=<Json String representing the models mapping with the following structure:
+ {"timeout": 1000,
+ "prediction_url_path": "/predict",
+ "WINE": {"model_service_port": "3003", "model_service_host": "http://localhost"},
+ "DIABETES": {"model_service_port": "3004”, "model_service_host": "http://localhost"}} 
+ 
+ Where WINE and DIABETES arev  modelTypes >
 ```
 When running the service in docker container the run will expect the following env variables to be passed.
 The easy way will be to create env-file with the variables (just copy paste variables from the previous part into the file)
@@ -45,7 +46,6 @@ interactive (recommended for debug): docker run -p 3000:5001 -it {some tag name}
 
 # Run on docker - production
 
-Using uWSGI and nginx for production  
 docker build . -t {some tag name}  
 detached : docker run --env-file=env-file -d {some tag name}  
 interactive (recommended for debug): docker run -p 3000:80 -it {some tag name}

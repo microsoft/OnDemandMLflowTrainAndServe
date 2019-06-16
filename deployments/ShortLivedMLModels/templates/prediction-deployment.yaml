@@ -51,26 +51,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.prediction.name }}-config
                   key: TRAINING_REQUESTS_TIMEOUT
-            - name: SALES_MODEL_SERVICE_PORT
+            - name: MLFLOW_MODELS_MAPPING
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.prediction.name }}-config
-                  key: SALES_MODEL_SERVICE_PORT
-            - name: PREDICTION_URL_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
-                  key: PREDICTION_URL_PATH
-            - name: TRAINING_PAYLOAD_URL_PATH
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
-                  key: TRAINING_PAYLOAD_URL_PATH
-            - name: MODEL_SERVICE_REQUESTS_TIMEOUT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
-                  key: MODEL_SERVICE_REQUESTS_TIMEOUT
+                  key: MLFLOW_MODELS_MAPPING
             - name: APP_INSIGHTS_INSTRUMENTATION_KEY
               valueFrom:
                 configMapKeyRef:
