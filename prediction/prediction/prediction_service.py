@@ -21,6 +21,8 @@ class PredictionService:
         self.appinsights_key = training_config['appinsights_key']
         self.service_name = prediction_config['service_name']
 
+    prediction_url_path = '/predict'
+
     def check_training_status(self, run_id):
         try:
             training_status_response = requests.get(self.training_url + '/' + str(run_id),
@@ -66,7 +68,7 @@ class PredictionService:
 
     def get_prediction(self, params, model_type):
         models_full_config = self.mlflow_models_mapping
-        model_url = self.get_model_url(model_type) + models_full_config['prediction_url_path']
+        model_url = self.get_model_url(model_type) + self.prediction_url_path
         model_response = requests.post(model_url, data=json.dumps(params), headers={
             'content-type': 'application/json'}, timeout=models_full_config['timeout']).json()
         return model_response

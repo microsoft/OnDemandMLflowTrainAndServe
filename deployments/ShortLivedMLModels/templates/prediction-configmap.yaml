@@ -6,8 +6,4 @@ data:
   TRAINING_SERVICE_PORT: {{ .Values.prediction.TRAINING_SERVICE_PORT | quote }}
   TRAINING_SERVICE_API_TRAIN_PATH: {{ .Values.prediction.TRAINING_SERVICE_API_TRAIN_PATH | quote }}
   TRAINING_REQUESTS_TIMEOUT: {{ .Values.prediction.TRAINING_REQUESTS_TIMEOUT | quote }}
-  SALES_MODEL_SERVICE_PORT: {{ .Values.prediction.SALES_MODEL_SERVICE_PORT | quote }}
-  PREDICTION_URL_PATH: {{ .Values.prediction.PREDICTION_URL_PATH | quote }}
-  TRAINING_PAYLOAD_URL_PATH: {{ .Values.prediction.TRAINING_PAYLOAD_URL_PATH | quote }}
-  MODEL_SERVICE_REQUESTS_TIMEOUT: {{ .Values.prediction.MODEL_SERVICE_REQUESTS_TIMEOUT | quote }}
-
+  MLFLOW_MODELS_MAPPING: {{ .Values.prediction.MLFLOW_MODELS_MAPPING | quote }}

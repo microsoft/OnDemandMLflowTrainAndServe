@@ -20,12 +20,9 @@ MODELS_RELATIVE_PATH=<the model_path set in  mlflow.sklearn.log_model(forecast_m
 ENVIRONMENT=<Not Required. Possible values are: local or production. This variable will affect what port the app will run on, for local=3000/production=80  >
 MLFLOW_REQUESTS_TIMEOUT=<integer value for request to timeout when calling mlflow api>
 MODEL_NAME=<Model name. For example: SALES>
-MODEL_TRAINING_PARAMETERS=<Model parameters required for model training. It should be a string of parameter=type separated by a comma.For example: a string productId=string,competitorId=string,outlier=float,retailer=string>
 MLFLOW_EXPERIMENT_ID=<MLflow experiment id that the model runs are logged in>
 DATABRICKS_HOST=<Databricks host>
 DATABRICKS_TOKEN=<Databricks token>
-MODEL_PREDICTION_PARAMETERS_TRANSLATION=<Prediction parameters mapping between as they recieved in json and how they are expected on the model>
-PREDICTION_PARAMETERS_TYPES=<Prediction parameters types mapping. For example: "date_param_name=date,string_param_name=string">
 ```
 
 MLFlow api env variables should be set following the [MLFllow Rest API documentation](https://www.mlflow.org/docs/latest/rest-api.html)
@@ -74,7 +71,6 @@ To find the root cause for this error, check the following scenarios:
         -   MLFLOW_SERVER_SEARCH_PATH
         -   MODELS_RELATIVE_PATH
         -   MLFLOW_REQUESTS_TIMEOUT
-        -   MODEL_TRAINING_PARAMETERS
         -   MLFLOW_EXPERIMENT_MAPPING
         -   DATABRICKS_HOST
         -   DATABRICKS_TOKEN
