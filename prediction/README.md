@@ -21,7 +21,6 @@ TRAINING_REQUESTS_TIMEOUT=<integer value for request to timeout when calling tra
 MLFLOW_REQUESTS_TIMEOUT=<integer value for request to timeout when calling mlflow api>
 MLFLOW_MODELS_MAPPING=<Json String representing the models mapping with the following structure:
  {"timeout": 1000,
- "prediction_url_path": "/predict",
  "WINE": {"model_service_port": "3003", "model_service_host": "http://localhost"},
  "DIABETES": {"model_service_port": "3004”, "model_service_host": "http://localhost"}} 
  
