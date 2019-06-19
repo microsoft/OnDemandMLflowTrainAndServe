@@ -72,7 +72,17 @@ In order to deploy the services to Kubernetes, please make sure the following co
 -   Databricks cluster with a notebook for each model required to be trained
 -   MLFlow available as a service in Databricks
 -   Kubernetes cluster and Helm configured and ready for use
--   Docker images registry including the docker images of the services. **Here we assume that the docker images were built and pushed to the registry.**
+-   Docker images registry - you can use any registry. We are using [Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/)
+
+### Build and Publish Docker Images
+
+Build the images using the dockerfiles found in each service folder. The images need to be pushed to a docker registry to be later used to deploy into the k8s cluster.
+Note that it is expected that service folder name is used as the service repository name. Make sure to use the same tag for all images.
+Use the [build_and_push.sh](build_and_push.sh) script to build, tag and push the images to the registry:
+
+```bash
+sh ./build_and_push.sh -t <TAG> -r <REGISTRY>
+```
 
 ### Configuration
 
@@ -80,7 +90,7 @@ Edit the [values.yaml](deployments\values.yaml) file with the values of the para
 
 > For more information about each service parameters, please refer to the service readme file
 
-### Running Helm
+### Deploy using Helm
 
 After setting the values in the `values.yaml` file:
 

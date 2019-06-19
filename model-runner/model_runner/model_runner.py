@@ -3,7 +3,6 @@ from pathlib import Path
 import json
 import glob
 import shutil
-from datetime import datetime
 from enum import Enum
 import mlflow
 from mlflow import sklearn as model_type
@@ -25,7 +24,8 @@ class ModelRunner:
     def __init__(self, mlflow_config, service_config):
         self.mlflow_config = mlflow_config
         self.service_config = service_config
-        self.mlflow_api_url = mlflow_config['databricks_host'] + mlflow_config['api_prefix']
+        self.mlflow_api_url = mlflow_config['databricks_host'] + \
+            mlflow_config['api_prefix']
         self.databricks_request_headers = {'content-type': 'application/json',
                                            'Authorization': 'Bearer ' + mlflow_config[
                                                'databricks_token']}
@@ -40,10 +40,13 @@ class ModelRunner:
         payload = {'experiment_ids': experiment_ids}
         parameters_data = []
         for param in params:
+            #pylint: disable-msg=C0123
             if type(params[param]) in [float, int]:
-                parameters_data.append("params." + param + " = " + str((params[param])))
+                parameters_data.append(
+                    "params." + param + " = " + str((params[param])))
             else:
-                parameters_data.append("params." + param + " = " + repr(str(params[param])))
+                parameters_data.append(
+                    "params." + param + " = " + repr(str(params[param])))
 
         payload['filter'] = " and ".join(parameters_data)
         return payload
@@ -55,11 +58,13 @@ class ModelRunner:
         search_models_response = requests.post(search_url, data=json.dumps(payload),
                                                headers=self.databricks_request_headers,
                                                timeout=self.mlflow_config['timeout'])
-        json_result = json.loads(search_models_response.content.decode('utf-8'))
+        json_result = json.loads(
+            search_models_response.content.decode('utf-8'))
 
         if 'runs' in json_result:
             results = json_result['runs']
-            latest_run = sorted(results, key=lambda k: k['info']['start_time'], reverse=True)[0]
+            latest_run = sorted(
+                results, key=lambda k: k['info']['start_time'], reverse=True)[0]
 
         return latest_run
 
@@ -74,7 +79,8 @@ class ModelRunner:
         # next we download the model
         # since this function does not receive a local output path
         # it downloads the artifacts to a "random" directory under /var/folders/ and returns the path to it
-        output_path = self.mlflow_client.download_artifacts(run_id, self.models_relative_path)
+        output_path = self.mlflow_client.download_artifacts(
+            run_id, self.models_relative_path)
         # the next step will be to copy the files from the output_path to local_output_path
         # the reason it is done that way, is because if we have already downloaded the model
         # we can easily find it
@@ -121,6 +127,7 @@ class ModelRunner:
             latest_run = self.search_model(request_body['modelParameters'])
             if latest_run is None:
                 response = json.dumps(
+                    #pylint: disable-msg=E1121
                     self.build_prediction_response("error",
                                                    'No successfully finished runs were found',
                                                    [], {}))

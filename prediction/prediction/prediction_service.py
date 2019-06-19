@@ -106,12 +106,14 @@ class PredictionService:
                 # if it haven't completed yet return it's current status
                 if training_response.status != JobStatus.COMPLETED.value:
                     response = json.dumps(
+                        #pylint: disable-msg=E1121
                         self.build_prediction_response(run_id, training_response.status,
                                                        training_response.status_message,
                                                        [], {}))
                 else:
                     model_response = self.get_prediction(body, model_type_name)
                     if model_response['status'] == 'error':
+                        #pylint: disable-msg=E1121
                         response = json.dumps(self.build_prediction_response(run_id, JobStatus.ERROR.value,
                                                                              model_response['statusMessage'],
                                                                              [], {}))
@@ -130,6 +132,7 @@ class PredictionService:
                     training_response = self.train_new_model(
                         body['modelType'], model_parameters)
                     response = json.dumps(
+                        #pylint: disable-msg=E1121
                         self.build_prediction_response(training_response.run_id, training_response.status,
                                                        training_response.status_message,
                                                        [], {}))
