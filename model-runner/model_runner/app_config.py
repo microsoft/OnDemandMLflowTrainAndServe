@@ -1,3 +1,4 @@
+import logging
 from environs import Env
 
 env = Env()
@@ -19,5 +20,6 @@ mlflow_config = {
 
 service_config = {
     "appinsights_key": env("APP_INSIGHTS_INSTRUMENTATION_KEY"),
-    "service_name": env("SERVICE_NAME")
+    "service_name": env("SERVICE_NAME"),
+    "log_level": env.int("LOG_LEVEL", logging.INFO)
 }

@@ -9,7 +9,7 @@ prediction_service = PredictionService(
 
 if __name__ == '__main__':
     env = os.getenv('ENVIRONMENT')
-    logging_level = env.int('LOG_LEVEL', logging.INFO)
+    logging_level = prediction_config['log_level']
 
     log = logging.getLogger('werkzeug')
     log.setLevel(logging_level)
