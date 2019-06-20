@@ -1,5 +1,6 @@
 import os
 import logging
+# pylint: disable-msg=F0401
 # pylint: disable=no-name-in-module
 from app_config import mlflow_config, service_config
 from model_runner import ModelRunner
