@@ -8,7 +8,7 @@ model_handler = ModelRunner(mlflow_config, service_config)
 
 if __name__ == '__main__':
     env = os.getenv('ENVIRONMENT')
-    logging_level = env.int('LOG_LEVEL', logging.INFO)
+    logging_level = service_config['log_level']
 
     log = logging.getLogger('werkzeug')
     log.setLevel(logging_level)
