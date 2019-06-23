@@ -127,10 +127,9 @@ class ModelRunner:
             latest_run = self.search_model(request_body['modelParameters'])
             if latest_run is None:
                 response = json.dumps(
-                    #pylint: disable-msg=E1121
                     self.build_prediction_response("error",
                                                    'No successfully finished runs were found',
-                                                   [], {}))
+                                                   []))
             else:
                 self.download_model(
                     latest_run['info']['run_uuid'])

@@ -109,14 +109,14 @@ class PredictionService:
                         #pylint: disable-msg=E1121
                         self.build_prediction_response(run_id, training_response.status,
                                                        training_response.status_message,
-                                                       [], {}))
+                                                       []))
                 else:
                     model_response = self.get_prediction(body, model_type_name)
                     if model_response['status'] == 'error':
                         #pylint: disable-msg=E1121
                         response = json.dumps(self.build_prediction_response(run_id, JobStatus.ERROR.value,
                                                                              model_response['statusMessage'],
-                                                                             [], {}))
+                                                                             []))
                     else:
                         response = json.dumps(
                             self.build_prediction_response(run_id, JobStatus.COMPLETED.value,
@@ -135,7 +135,7 @@ class PredictionService:
                         #pylint: disable-msg=E1121
                         self.build_prediction_response(training_response.run_id, training_response.status,
                                                        training_response.status_message,
-                                                       [], {}))
+                                                       []))
                 else:
                     response = json.dumps(
                         self.build_prediction_response(run_id, JobStatus.COMPLETED.value,
