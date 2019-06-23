@@ -123,10 +123,9 @@ class PredictionService:
                                                            None,
                                                            model_response['result']))
             else:
-                # if the job is None
-                # since the simulation service is unaware of model and prediction parameters separation
+                # if the run is None
                 # two options are possible: first train a new model
-                # second if the change in the ui was only on prediction parameters, maybe we already trained that model
+                # second - maybe we already trained that model
                 model_response = self.get_prediction(body, model_type_name)
                 if model_response['status'] == 'error':
                     training_response = self.train_new_model(
