@@ -41,29 +41,29 @@ New requests for training are treated with the following steps:
 
     ```json
     {
-        "state": "<RUN_STATUS>",
+        "state": "<Run Status>",
         "message": "<Run Message>"
     }
     ```
 
-    - **'RUN_STATUS'** could be one of the following values: `pending`, `running` or `completed`
+    - **'Run Status'** could be one of the following values: `pending`, `running` or `completed`
     - **'Run Message'** is generally empty, but will include error message if the run finishes unsuccessfully.
 
 ## Environment Variables
 
 The service expects several environment variables to be set in order to run:
 
-| Var                              | Required | Description                                   |
-| -------------------------------- | -------- | --------------------------------------------- |
-| PORT                             | yes      | Service port                                  |
-| DATABRICKS_WORKSPACE_URL         | yes      | Databricks Workspace URL                      |
-| DATABRICKS_AUTH_TOKEN            | yes      | Authentication Token for Databricks           |
-| DATABRICKS_CLUSTER_ID            | yes      | Databricks cluster ID                         |
-| DATABRICKS_RUN_TIMEOUT           | yes      | Run timeout for notebook runs                 |
-| DATABRICKS_TYPE_MAPPING          | yes      | Json including TYPE:NOTEBOOK_PATH mapping     |
-| NODE_ENV                         | no       | **test** for unit testing                     |
-| APP_INSIGHTS_INSTRUMENTATION_KEY | no       | Application Insights instrumentation key      |
-| SERVICE_NAME                     | no       | service name for Application Insights logging |
+| Var                              | Required | Description                                                                                                                                |
+| -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| PORT                             | yes      | Service port. default=80                                                                                                                   |
+| DATABRICKS_WORKSPACE_URL         | yes      | Databricks Workspace URL                                                                                                                   |
+| DATABRICKS_AUTH_TOKEN            | yes      | Authentication Token for Databricks                                                                                                        |
+| DATABRICKS_CLUSTER_ID            | yes      | Databricks cluster ID. More information can be found [here](https://docs.databricks.com/user-guide/faq/workspace-details.html#cluster-url) |
+| DATABRICKS_RUN_TIMEOUT           | yes      | Run timeout for notebook runs                                                                                                              |
+| DATABRICKS_TYPE_MAPPING          | yes      | Json including MODEL:NOTEBOOK_PATH mapping                                                                                                 |
+| NODE_ENV                         | no       | **test** for unit testing                                                                                                                  |
+| APP_INSIGHTS_INSTRUMENTATION_KEY | no       | Application Insights instrumentation key                                                                                                   |
+| SERVICE_NAME                     | no       | service name for Application Insights logging                                                                                              |
 
 ### Sample environment variables
 
@@ -73,15 +73,14 @@ DATABRICKS_WORKSPACE_URL=https://westeurope.azuredatabricks.net
 DATABRICKS_AUTH_TOKEN=abcdefghi123456a123a1234a123456abc12
 DATABRICKS_CLUSTER_ID=1234-123456-hurts123
 DATABRICKS_RUN_TIMEOUT=3600
-DATABRICKS_TYPE_MAPPING="{\"MODEL\":\"/test-models/types\"}"
+DATABRICKS_TYPE_MAPPING={"wine":"/shared/wine_notebook","diabetes":"/shared/diabetes_notebook"}
 APP_INSIGHTS_INSTRUMENTATION_KEY=01e9c546-1234-1234-cf56-7d6b49fc053a
 SERVICE_NAME=training
-NODE_ENV=test
 ```
 
 ## Build and Run locally with docker
 
 ```bash
 docker build . -t training-service
-docker run -e PORT=<exposed port> -e DATABRICKS_WORKSPACE_URL=<DB workspace url> -e DATABRICKS_AUTH_TOKEN=<token> -e DATABRICKS_CLUSTER_ID=<cluster id> -e DATABRICKS_RUN_TIMEOUT=<timeout> -e DATABRICKS_TYPE_MAPPING=<TYPE:NOTEBOOK_PATH mapping> -e APP_INSIGHTS_INSTRUMENTATION_KEY=<key> -e SERVICE_NAME=training -e NODE_ENV=development -p 127.0.0.1:3000:3000 training-service
+docker run --env-file=.env-file -p 127.0.0.1:3000:3000 training-service
 ```

@@ -17,5 +17,5 @@ app.use('/train', require('./routes/training-routes'));
 
 app.get('/', (req, res) => res.send('Training Service is up.'));
 
-const port = process.env.PORT;
+const port = process.env.PORT ? process.env.PORT : 80;
 app.listen(port, () => logger.info(`Training Service: Listening on port ${port}!`));

@@ -38,6 +38,4 @@ if (process.env.NODE_ENV === 'test') {
 
     validateVarNotEmpty('DATABRICKS_TYPE_MAPPING');
     validateVarIsJson('DATABRICKS_TYPE_MAPPING');
-
-    validateVarNotEmpty('PORT');
 }
