@@ -8,7 +8,6 @@ imagesTag: <DockerImagesTag>
 
 global:
     DATABRICKS_WORKSPACE_URL: <DATABRICKS_WORKSPACE_URL>
-    MLFLOW_SERVER_API_PREFIX: <MLFLOW_SERVER_API_PREFIX>
     APP_INSIGHTS_INSTRUMENTATION_KEY: <APP_INSIGHTS_INSTRUMENTATION_KEY>
     secret:
         DATABRICKS_AUTH_TOKEN: <DATABRICKS_AUTH_TOKEN>
@@ -17,21 +16,24 @@ prediction:
     name: prediction
     dockerImage: 
         name: prediction
-    TRAINING_SERVICE_PORT: 80
-    TRAINING_SERVICE_API_TRAIN_PATH: train
-    TRAINING_REQUESTS_TIMEOUT: 10
-    MLFLOW_MODELS_MAPPING: <MLFLOW_MODELS_MAPPING>
+    TRAINING_SERVICE_API_TRAIN_PATH: /train
+    TRAINING_REQUESTS_TIMEOUT: 1000
     
 modelRunner:
-    name: model-runner    
     dockerImage: 
         name: model-runner
-    MLFLOW_SERVER_SEARCH_PATH: <MLFLOW_SERVER_SEARCH_PATH>
-    MLFLOW_EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>
-    MLFLOW_REQUESTS_TIMEOUT: 10
+    MLFLOW_SERVER_API_PREFIX: /api/2.0/mlflow
+    MLFLOW_SERVER_SEARCH_PATH: /runs/search
     MODELS_RELATIVE_PATH: model
-    MODEL_NAME: <MODEL_NAME>
-
+    MLFLOW_REQUESTS_TIMEOUT: 1000
+    MLFlowModels:
+        1: 
+            MODEL_NAME: WINE
+            EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>
+        2: 
+            MODEL_NAME: DIABETES
+            EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>
+    
 training:
     name: training
     dockerImage: 
@@ -39,5 +41,5 @@ training:
     DATABRICKS_CLUSTER_ID: <DATABRICKS_CLUSTER_ID>
     DATABRICKS_RUN_TIMEOUT: 3600
     DATABRICKS_TYPE_MAPPING: <JSON represents ModelName => NotebookPath in Databricks> 
-    #e.g: DATABRICKS_TYPE_MAPPING: '{"MODEL1":"/Shared/notebook1"}' 
+    #e.g: DATABRICKS_TYPE_MAPPING: '{"wine":"/shared/wine_notebook","diabetes":"/shared/diabetes_notebook"}' 
     

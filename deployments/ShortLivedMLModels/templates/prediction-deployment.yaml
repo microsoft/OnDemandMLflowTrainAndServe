@@ -1,22 +1,27 @@
+{{ $name := .Values.prediction.name }}
+{{ $replicas := .Values.replicas }}
+{{ $image := printf "%s/%s:%s" .Values.repository .Values.prediction.dockerImage.name .Values.imagesTag }}
+{{ $trainingHost := printf "http://%s-service" .Values.training.name }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.prediction.name }}
+  name: {{ $name }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.prediction.name }}
+      app: {{ $name }}
       tier: backend
-  replicas: {{ .Values.replicas }}
+  replicas: {{ $replicas }}
   template:
     metadata:
       labels:
-        app: {{ .Values.prediction.name }}
+        app: {{ $name }}
         tier: backend
     spec:
       containers:
-        - name: {{ .Values.prediction.name }}
-          image: "{{ .Values.repository }}/{{ .Values.prediction.dockerImage.name }}:{{ .Values.imagesTag }}"
+        - name: {{ $name }}
+          image: {{ $image }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -29,32 +34,28 @@ spec:
             httpGet:
               path: /
               port: 80
+            timeoutSeconds: 5
           env:
             - name: TRAINING_SERVICE_HOST
-              value: {{ printf "http://%s-service" .Values.training.name }}
-            - name: SALES_MODEL_SERVICE_HOST
-              value: {{ printf "http://%s-service" .Values.modelRunner.name }}
+              value: {{ $trainingHost }}
             - name: SERVICE_NAME
-              value: {{ .Values.prediction.name }}
+              value: {{ $name }}
             - name: TRAINING_SERVICE_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
-                  key: TRAINING_SERVICE_PORT
+              value: "80"
             - name: TRAINING_SERVICE_API_TRAIN_PATH
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
+                  name: {{ $name }}-config
                   key: TRAINING_SERVICE_API_TRAIN_PATH
             - name: TRAINING_REQUESTS_TIMEOUT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
+                  name: {{ $name }}-config
                   key: TRAINING_REQUESTS_TIMEOUT
             - name: MLFLOW_MODELS_MAPPING
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.prediction.name }}-config
+                  name: {{ $name }}-config
                   key: MLFLOW_MODELS_MAPPING
             - name: APP_INSIGHTS_INSTRUMENTATION_KEY
               valueFrom:

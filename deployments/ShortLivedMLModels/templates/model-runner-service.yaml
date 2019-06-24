@@ -1,12 +1,17 @@
+{{- range $key, $value := .Values.modelRunner.MLFlowModels }}
+{{ $modelName := $value.MODEL_NAME | lower }}
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.modelRunner.name }}-service
+  name: {{ $modelName }}-service
 spec:
   selector:
-    app: {{ .Values.modelRunner.name }}
+    app: {{ $modelName }}
     tier: backend
   ports:
   - port: 80
     targetPort: 80
     protocol: TCP
+---
+{{- end }}

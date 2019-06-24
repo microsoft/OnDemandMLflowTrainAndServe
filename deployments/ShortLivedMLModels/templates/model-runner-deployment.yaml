@@ -1,22 +1,27 @@
+{{ $replicas := .Values.replicas }}
+{{ $image := printf "%s/%s:%s" .Values.repository .Values.modelRunner.dockerImage.name .Values.imagesTag }}
+
+{{- range $key, $value := .Values.modelRunner.MLFlowModels }}
+{{ $modelName := $value.MODEL_NAME | lower }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.modelRunner.name }}
+  name: {{ $modelName }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.modelRunner.name }}
+      app: {{ $modelName }}
       tier: backend
-  replicas: {{ .Values.replicas }}
+  replicas: {{ $replicas }}
   template:
     metadata:
       labels:
-        app: {{ .Values.modelRunner.name }}
+        app: {{ $modelName }}
         tier: backend
     spec:
       containers:
-        - name: {{ .Values.modelRunner.name }}
-          image: "{{ .Values.repository }}/{{ .Values.modelRunner.dockerImage.name }}:{{ .Values.imagesTag }}"
+        - name: {{ $modelName }}
+          image: {{ $image }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -33,42 +38,37 @@ spec:
             periodSeconds: 3
           env:
             - name: SERVICE_NAME
-              value: {{ .Values.modelRunner.name }}
+              value: {{ $modelName }}-service
             - name: MLFLOW_SERVER_API_PREFIX
               valueFrom:
                 configMapKeyRef:
-                  name: global-config
+                  name: {{ $modelName }}-config
                   key: MLFLOW_SERVER_API_PREFIX
             - name: MLFLOW_SERVER_SEARCH_PATH
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
+                  name: {{ $modelName }}-config
                   key: MLFLOW_SERVER_SEARCH_PATH
             - name: MLFLOW_EXPERIMENT_ID
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
+                  name: {{ $modelName }}-config
                   key: MLFLOW_EXPERIMENT_ID
             - name: MLFLOW_REQUESTS_TIMEOUT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
+                  name: {{ $modelName }}-config
                   key: MLFLOW_REQUESTS_TIMEOUT
             - name: MODELS_RELATIVE_PATH
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
+                  name: {{ $modelName }}-config
                   key: MODELS_RELATIVE_PATH
             - name: MODEL_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
+                  name: {{ $modelName }}-config
                   key: MODEL_NAME
-            - name: MODEL_TRAINING_PARAMETERS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.modelRunner.name }}-config
-                  key: MODEL_TRAINING_PARAMETERS
             - name: APP_INSIGHTS_INSTRUMENTATION_KEY
               valueFrom:
                 configMapKeyRef:
@@ -84,3 +84,5 @@ spec:
                 secretKeyRef:
                   name: global-secrets
                   key: DATABRICKS_AUTH_TOKEN
+---
+{{- end }}

@@ -1,11 +1,21 @@
+{{ $MLFlowServerAPIPrefix := .Values.modelRunner.MLFLOW_SERVER_API_PREFIX }}
+{{ $MLFlowServerSearchPath := .Values.modelRunner.MLFLOW_SERVER_SEARCH_PATH }}
+{{ $MLFlowRequestTimeout := .Values.modelRunner.MLFLOW_REQUESTS_TIMEOUT }}
+{{ $modelsRelativePath := .Values.modelRunner.MODELS_RELATIVE_PATH }}
+
+{{- range $key, $value := .Values.modelRunner.MLFlowModels }}
+{{ $modelName := $value.MODEL_NAME | lower }}
+{{ $experimentId := $value.EXPERIMENT_ID }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.modelRunner.name }}-config
+  name: {{ $modelName }}-config
 data:
-  MLFLOW_SERVER_API_PREFIX: {{ .Values.global.MLFLOW_SERVER_API_PREFIX | quote }}
-  MLFLOW_SERVER_SEARCH_PATH: {{ .Values.modelRunner.MLFLOW_SERVER_SEARCH_PATH | quote }}
-  MLFLOW_EXPERIMENT_ID: {{ .Values.modelRunner.MLFLOW_EXPERIMENT_ID | quote }}
-  MLFLOW_REQUESTS_TIMEOUT: {{ .Values.modelRunner.MLFLOW_REQUESTS_TIMEOUT | quote }}
-  MODELS_RELATIVE_PATH: {{ .Values.modelRunner.MODELS_RELATIVE_PATH | quote }}
-  MODEL_NAME: {{ .Values.modelRunner.MODEL_NAME | quote }}
+  MLFLOW_EXPERIMENT_ID: {{ $experimentId | quote }}
+  MODEL_NAME: {{ $modelName | quote }}
+  MLFLOW_SERVER_API_PREFIX: {{ $MLFlowServerAPIPrefix | quote }}
+  MLFLOW_SERVER_SEARCH_PATH: {{ $MLFlowServerSearchPath | quote }}
+  MLFLOW_REQUESTS_TIMEOUT: {{ $MLFlowRequestTimeout | quote }}
+  MODELS_RELATIVE_PATH: {{ $modelsRelativePath | quote }}
+---
+{{- end }}

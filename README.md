@@ -56,7 +56,36 @@ sh ./build_and_push.sh -t <TAG> -r <REGISTRY>
 
 Edit the [values.yaml](deployments\values.yaml) file with the values of the parameters.
 
+-   **replicas**: The number of needed instances of each service.
+-   **repository**: Docker images registry that includes the tagged images uploaded and ready to be deployed to k8s cluster.
+-   **imagesTag**: The needed tag of the images to be deployed.
+
 > For more information about each service parameters, please refer to the service readme file
+
+#### Models configuration
+
+Under the **modelRunner** section in the `values.yaml` file, you can add, remove or modify the configurations of MLFlow models.
+
+To Add a new MLFlow model, add a new member to the **MLFlowModels** list, and include the **MODEL_NAME** and **EXPERIMENT_ID** values:
+
+```yaml
+MLFlowModels:
+    1:
+        MODEL_NAME: wine
+        EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>
+    2:
+        MODEL_NAME: diabetes
+        EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>
+    3:
+        MODEL_NAME: new_model
+        EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>**
+```
+
+Each model has a notebook in the Databricks. The paths of these notebooks must be set under the **training** section in the `values.yaml` file. When adding, removing or editing the notebook path in the Databricks, you need to make the corresponding change in the **DATABRICKS_TYPE_MAPPING** json:
+
+```yaml
+DATABRICKS_TYPE_MAPPING: '{"wine": "/shared/wine_notebook", "diabetes": "/shared/diabetes_notebook", "new_model": "/shared/new_model_notebook"}'
+```
 
 ### Deploy using Helm
 

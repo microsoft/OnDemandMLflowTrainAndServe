@@ -1,22 +1,26 @@
+{{ $name := .Values.training.name }}
+{{ $replicas := .Values.replicas }}
+{{ $image := printf "%s/%s:%s" .Values.repository .Values.training.dockerImage.name .Values.imagesTag }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.training.name }}
+  name: {{ $name }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.training.name }}
+      app: {{ $name }}
       tier: backend
-  replicas: {{ .Values.replicas }}
+  replicas: {{ $replicas }}
   template:
     metadata:
       labels:
-        app: {{ .Values.training.name }}
+        app: {{ $name }}
         tier: backend
     spec:
       containers:
-        - name: {{ .Values.training.name }}
-          image: "{{ .Values.repository }}/{{ .Values.training.dockerImage.name }}:{{ .Values.imagesTag }}"
+        - name: {{ $name }}
+          image: {{ $image }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -31,7 +35,7 @@ spec:
               port: 80          
           env:
             - name: SERVICE_NAME
-              value: {{ .Values.training.name }}
+              value: {{ $name }}
             - name: PORT
               value: "80"
             - name: DATABRICKS_WORKSPACE_URL
@@ -42,17 +46,17 @@ spec:
             - name: DATABRICKS_CLUSTER_ID
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.training.name }}-config
+                  name: {{ $name }}-config
                   key: DATABRICKS_CLUSTER_ID
             - name: DATABRICKS_RUN_TIMEOUT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.training.name }}-config
+                  name: {{ $name }}-config
                   key: DATABRICKS_RUN_TIMEOUT
             - name: DATABRICKS_TYPE_MAPPING
               valueFrom:
                 configMapKeyRef:
-                  name: {{ .Values.training.name }}-config
+                  name: {{ $name }}-config
                   key: DATABRICKS_TYPE_MAPPING
             - name: APP_INSIGHTS_INSTRUMENTATION_KEY
               valueFrom:
