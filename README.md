@@ -1,4 +1,4 @@
-# Serving On demand Machine Learning Models utilizing MLflow
+# Serving On demand Machine Learning Models with MLFlow
 
 This sample demonstrates the use of [Azure Databricks](https://docs.azuredatabricks.net/getting-started/index.html) and [MLflow](https://docs.azuredatabricks.net/applications/mlflow/index.html) for on-demand training and serving of Machine Learning models, hosted in Databricks notebook.
 

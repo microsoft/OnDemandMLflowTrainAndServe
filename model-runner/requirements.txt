@@ -8,3 +8,4 @@ pandas==0.23.4
 databricks-cli
 applicationinsights==0.11.9
 environs
+Werkzeug==0.11.15
