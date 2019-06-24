@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/csedevil/short-lived-mlflow/_apis/build/status/microsoft.ShortLivedMLFlowModels?branchName=dev)](https://dev.azure.com/csedevil/short-lived-mlflow/_build/latest?definitionId=130&branchName=dev)
+
 # Serving On demand Machine Learning Models with MLFlow
 
 This sample demonstrates the use of [Azure Databricks](https://docs.azuredatabricks.net/getting-started/index.html) and [MLflow](https://docs.azuredatabricks.net/applications/mlflow/index.html) for on-demand training and serving of Machine Learning models, hosted in Databricks notebook.
