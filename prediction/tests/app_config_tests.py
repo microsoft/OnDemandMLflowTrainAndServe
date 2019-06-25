@@ -18,6 +18,6 @@ mlflow_models_mapping = {
 
 }
 
-prediction_config = {
+service_config = {
     "service_name": "SERVICE_NAME"
 }

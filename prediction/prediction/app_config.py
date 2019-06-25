@@ -12,7 +12,8 @@ training_service_config = {
 }
 
 mlflow_models_mapping = env.json('MLFLOW_MODELS_MAPPING')
-prediction_config = {
+service_config = {
     "service_name": env("SERVICE_NAME"),
-    "log_level": env.int("LOG_LEVEL", logging.INFO)
+    "log_level": env.int("LOG_LEVEL", logging.INFO),
+    "port": env.int("PORT", 80)
 }

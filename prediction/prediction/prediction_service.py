@@ -13,13 +13,13 @@ class JobStatus(Enum):
 
 
 class PredictionService:
-    def __init__(self, training_config, mlflow_models_mapping, prediction_config):
+    def __init__(self, training_config, mlflow_models_mapping, service_config):
         self.training_config = training_config
         self.mlflow_models_mapping = mlflow_models_mapping
         self.training_url = training_config['host'] + ':' + str(training_config['port']) + training_config[
             'api_train_path']
         self.appinsights_key = training_config['appinsights_key']
-        self.service_name = prediction_config['service_name']
+        self.service_name = service_config['service_name']
 
     prediction_url_path = '/predict'
 

@@ -117,6 +117,10 @@ You can also set the values that you need to change inline, by adding `--set var
 
 > More detailed information about Helm commands can be found in [Helm documentation](https://helm.sh/docs/helm/#helm-install).
 
+## Troubleshooting
+
+For troubleshooting [click here](Troubleshooting.md)
+
 ## Contributing
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a

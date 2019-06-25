@@ -2,7 +2,7 @@ import requests
 import unittest
 from unittest import mock
 import json
-from app_config_tests import training_service_config, mlflow_models_mapping, prediction_config
+from app_config_tests import training_service_config, mlflow_models_mapping, service_config
 from prediction.prediction_service import PredictionService, TrainingResponse, JobStatus
 
 
@@ -17,7 +17,7 @@ class MockResponse:
 
 
 class PredictionServiceTest(unittest.TestCase):
-    prediction_service = PredictionService(training_service_config, mlflow_models_mapping, prediction_config)
+    prediction_service = PredictionService(training_service_config, mlflow_models_mapping, service_config)
 
     # test check_training_status function
     def mocked_failed_training_response(*args, **kwargs):
