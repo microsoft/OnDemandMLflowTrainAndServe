@@ -1,12 +1,16 @@
-[![Build Status](https://dev.azure.com/csedevil/short-lived-mlflow/_apis/build/status/microsoft.ShortLivedMLFlowModels?branchName=dev)](https://dev.azure.com/csedevil/short-lived-mlflow/_build/latest?definitionId=130&branchName=dev)
+# Serving On-Demand Machine Learning Models with MLflow
 
-# Serving On demand Machine Learning Models with MLFlow
+[![Build Status](https://dev.azure.com/csedevil/short-lived-mlflow/_apis/build/status/microsoft.ShortLivedMLFlowModels?branchName=master)](https://dev.azure.com/csedevil/short-lived-mlflow/_build/latest?definitionId=130&branchName=dev)
 
-A solution for on-demand training and serving of Machine Learning models,using [Azure Databricks](https://docs.azuredatabricks.net/getting-started/index.html) and [MLflow](https://docs.azuredatabricks.net/applications/mlflow/index.html).
+A solution for on-demand training and serving of Machine Learning models, using [Azure Databricks](https://docs.azuredatabricks.net/getting-started/index.html) and [MLflow](https://docs.azuredatabricks.net/applications/mlflow/index.html).
+
+Most docs and samples out there usually show you how to take one specific ML model and bring it into a production like environment with scale in mind.
+In this sample solution, we try to offer an approach to scale the number of different models existing in the system at the same time rather than scaling one specific model for the number of inference requests it is going to answer.
+It has been generalized from a real use-case where end-users` actions required models to be trained on the fly and then used for inference at low-scale according to their specifications.
 
 The code in this repository allows a data scientist, that created an MLflow project, to test it with different parameters and later serve the model to get its prediction results based on the trained model.
 
-> When running this sample, we assume a notebook is already loaded in Azure Databricks, and this notebook is using MLflow to store and log the experiments. This repository holds 2 [sample notebooks](./notebooks) (based on the samples provided by MLflow) you can use to get started.
+> When running this sample, we assume a notebook is already loaded in Azure Databricks, and this notebook is using MLflow to store and log the experiments. In this repository there're 2 [sample notebooks](./notebooks) (based on the samples provided by MLflow) you can use to get started.
 
 ## Architecture
 
@@ -40,13 +44,13 @@ The application is deployed to a Kubernetes cluster using [Helm](https://helm.sh
 In order to deploy the services to Kubernetes, please make sure the following components are installed and running:
 
 -   Databricks cluster with a notebook for each model required to be trained
--   MLFlow available as a service in Databricks
+-   MLflow available as a service in Databricks
 -   Kubernetes cluster and Helm configured and ready for use
 -   Docker images registry - you can use any registry. We are using [Azure Container Registry](https://docs.microsoft.com/en-us/azure/container-registry/)
 
 ### Build and Publish Docker Images
 
-Build the images using the dockerfiles found in each service folder. The images need to be pushed to a docker registry to be later used to deploy into the k8s cluster.
+Build the images using the docker files found in each service folder. The images need to be pushed to a docker registry to be later used to deploy into the k8s cluster.
 Note that it is expected that service folder name is used as the service repository name. Make sure to use the same tag for all images.
 Use the [build_and_push.sh](build_and_push.sh) script to build, tag and push the images to the registry:
 
@@ -66,9 +70,9 @@ Edit the [values.yaml](deployments\values.yaml) file with the values of the para
 
 #### Models configuration
 
-Under the **modelRunner** section in the `values.yaml` file, you can add, remove or modify the configurations of MLFlow models.
+Under the **modelRunner** section in the `values.yaml` file, you can add, remove or modify the configurations of MLflow models.
 
-To Add a new MLFlow model, add a new member to the **MLFlowModels** list, and include the **MODEL_NAME** and **EXPERIMENT_ID** values:
+To Add a new MLflow model, add a new member to the **MLFlowModels** list, and include the **MODEL_NAME** and **EXPERIMENT_ID** values:
 
 ```yaml
 MLFlowModels:
@@ -83,7 +87,7 @@ MLFlowModels:
         EXPERIMENT_ID: <MLFLOW_EXPERIMENT_ID>**
 ```
 
-Each model has a notebook in the Databricks. The paths of these notebooks must be set under the **training** section in the `values.yaml` file. When adding, removing or editing the notebook path in the Databricks, you need to make the corresponding change in the **DATABRICKS_TYPE_MAPPING** json:
+Each model has a notebook in Databricks. The paths of these notebooks must be set under the **training** section in the `values.yaml` file. When adding, removing or editing the notebook path in Databricks, you need to make the corresponding change in the **DATABRICKS_TYPE_MAPPING** json:
 
 ```yaml
 DATABRICKS_TYPE_MAPPING: '{"wine": "/shared/wine_notebook", "diabetes": "/shared/diabetes_notebook", "new_model": "/shared/new_model_notebook"}'
@@ -113,13 +117,13 @@ If there is a need to make changes to any of the values in the `values.yaml`, ma
 helm upgrade demo ShortLivedMLModels --recreate-pods --reset-values --force --values ShortLivedMLModels\values.yaml
 ```
 
-You can also set the values that you need to change inline, by adding `--set var1=value1,var2=value2` to the end of the command.
+You can also set the values that you need to change inline, by adding `--set var1=value1,var2=value2` at the end of the command.
 
-> More detailed information about Helm commands can be found in [Helm documentation](https://helm.sh/docs/helm/#helm-install).
+> Detailed information about Helm commands can be found in [Helm documentation](https://helm.sh/docs/helm/#helm-install).
 
 ## Troubleshooting
 
-For troubleshooting [click here](Troubleshooting.md)
+If something doesn't work for you, see our [troubleshooting guide](Troubleshooting.md)
 
 ## Contributing
 

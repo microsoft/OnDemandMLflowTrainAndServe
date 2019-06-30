@@ -1,16 +1,15 @@
 # Training Service
 
-Training Service is responsible to communicate with a third party service to train a new ML model.
-
-In our case, we are using Azure Databricks. Using other third party will require an implementation change for the training service.
+The training service is responsible to communicate with a third party service to train a new ML model.
+In our case, we are using Azure Databricks. Using other third party will require an implementation change in this service, however the other parts of the system should remain the same.
 
 ## Request Flows
 
-### New Training request
+### New Training Request
 
-New requests for training are treated with the following steps:
+New requests for training are going through the following steps:
 
-1. A new request (POST) for a training is coming with the following data structure in the body:
+1. A new request (POST) for training includes the following body:
 
     ```json
     {
@@ -21,10 +20,10 @@ New requests for training are treated with the following steps:
     }
     ```
 
-1. Retrieve the notebook path in Databricks according to the `modelType` (which in our case is 'MODEL').
-    > Note: `modelType` -> 'Databricks notebook path' mappings are described in the json value of the `DATABRICKS_TYPE_MAPPING` environment variable.
+1. Retrieve the notebook path in Databricks according to the `modelType` ('MODEL' in this case).
+    > Note: `modelType` -> 'Databricks notebook path' mappings are described in the json value of the `DATABRICKS_TYPE_MAPPING` environment variable (more details below).
 1. Start the Databricks cluster if it is in 'TERMINATED' state.
-1. Send a request to the Databricks to run the notebook with the specified parameters.
+1. Send a request to Databricks to run the notebook with the specified parameters.
 1. The response from Databricks will include `runId`, and will be returned in the response json in the following structure:
 
     ```json
@@ -33,11 +32,11 @@ New requests for training are treated with the following steps:
     }
     ```
 
-### Get Run Status request
+### Get Run Status Request
 
-1. A new request for run status is coming with `runId` in the request path. Example: `GET /123`
+1. A new request for run status is received with `runId` in the request path. Example: `GET /123`
 
-1. The response from Databricks will include `state` and `message`, and will be returned in the response json in the following structure:
+1. The service will check the run on Databricks and will return a response that includes `state` and `message` in the following structure:
 
     ```json
     {
@@ -78,7 +77,7 @@ APP_INSIGHTS_INSTRUMENTATION_KEY=01e9c546-1234-1234-cf56-7d6b49fc053a
 SERVICE_NAME=training
 ```
 
-## Build and Run locally with docker
+## Build and Run with Docker
 
 ```bash
 docker build . -t training-service

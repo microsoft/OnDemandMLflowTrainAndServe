@@ -1,20 +1,24 @@
 # Troubleshooting
 
-This section will try to help you with a common error that is returned when asking for prediction and no successful trained model was not found.
-In this case following message will be returned 'No successfully finished runs were found'.
-To find the root cause for this error, check the following scenarios.
+When requesting for a prediction you might receive back an error saying: 'No successfully finished runs were found'. This usually happens when the system cannot find a model that was successfully trained. This section will help you find the root cause for the error.
 
-## Model Runner service configuration
--   Verify model runner service is up and running :
-    -   On Kubernetes cluster:
+## Model Runner Service Configuration
+
+-   Verify model runner service is up and running:
+
+    -   On a Kubernetes cluster:
+
     ```bash
     kubectl get pods
     ```
+
     -   Locally:
+
     ```bash
     docker ps
     ```
--   on model service verify the following env variables configuration :
+
+-   Verify env variables configuration defined for the model runner service:
 
     -   MLFLOW_SERVER_API_PREFIX
     -   MLFLOW_SERVER_SEARCH_PATH
@@ -23,47 +27,56 @@ To find the root cause for this error, check the following scenarios.
     -   MLFLOW_EXPERIMENT_MAPPING
     -   DATABRICKS_HOST
     -   DATABRICKS_TOKEN
-        to check env variables values locally (on a running docker container):
+
+    To check env variables values locally (on a running docker container):
 
     ```bash
     docker exec container_name bash -c 'echo "$ENV_VAR"'
     ```
 
-    to check env variables on a running kubernetes pod, the following command shows what was passed,
-    you can look at the pod spec (like the docker command that was used to run it):
+    To check env variables on a running kubernetes pod, the following command shows the pod spec where you should review the 'env' section:
 
     ```bash
     kubectl get pod ${mypod} -oyaml
     ```
-    - look for the env: section
 
-    to show what's in effect, you can exec into the pod:
+    You can also check from inside the pod what is in effect:
 
     ```bash
     kubectl exec ${mypod} -- sh -c env
     ```
 
-    if those parameters are not defined correctly the model service will be looking for a model in a wrong experiment/databricks and etc.
-## Training Service configuration
+    If those parameters are not defined correctly, the model service will be looking for a model in a wrong experiment/databricks etc.
 
--   Verify training service is up and running :
-    -   On Kubernetes cluster:
+## Training Service Configuration
+
+-   Verify training service is up and running:
+
+    -   On a Kubernetes cluster:
+
     ```bash
     kubectl get pods
     ```
+
     -   Locally:
+
     ```bash
     docker ps
     ```
--   on training service the following env variables configuration should be valid :
-    -   DATABRICKS_WORKSPACE_URL=<Databricks Workspace URL. Example: https://westeurope.azuredatabricks.net>
-    -   DATABRICKS_AUTH_TOKEN=<Authentication Token for Databricks>
-    -   DATABRICKS_CLUSTER_ID=<Databricks cluster ID>
-    -   DATABRICKS_TYPE_MAPPING=<Json including TYPE:NOTEBOOK_PATH, Example: "{\"MODEL\":\"/Users/user@domain.com/TYPES\"}">
+
+-   Verify env variables configuration defined for the training service:
+
+    -   DATABRICKS_WORKSPACE_URL
+    -   DATABRICKS_AUTH_TOKEN
+    -   DATABRICKS_CLUSTER_ID
+    -   DATABRICKS_TYPE_MAPPING
+
     (see how to check the env variables values in the first section )
-    if those parameters are not defined correctly the training service will train the model in a wrong databricks/notebook and etc.
+    If those parameters are not defined correctly the training service will train the model in a wrong databricks/notebook etc.
 
 ## Databricks Notebook Execution
-If the mlflow notebook run has failed those are the common scenarios:
--   Notebook parameters - verify parameters sent within request's json body have the same names and types as they are set in the notebook.
--   Other errors - Try running notebook manually with same parameters sent within request's json body and see if any error occurs
+
+If the MLflow notebook run has failed in Databricks, those are the common reasons:
+
+-   Notebook parameters - verify that the parameters sent within request's json body have the same names and types in the notebook.
+-   Other errors - Try running notebook manually with the same parameters sent within request's json body and see if any error occurs.

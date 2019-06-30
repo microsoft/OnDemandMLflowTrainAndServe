@@ -1,14 +1,14 @@
 # Solution User Flow
 
 The entry point to the solution is the Prediction Service, with the **/predict** POST API.
-The body of the request holds the required parameters to run an ML Model.
+The body of the request includes the required parameters to run an ML Model.
 
 The diagram bellow illustrates the processes and decisions taken throughout the solution life cycle:
 ![Process Flow Diagram](images/process_flow.png)
 
-User requests a prediction based on an ML Model stored in databricks using the /predict API:
+User requests a prediction based on an ML Model stored in databricks by using the /predict API:
 
-1. If a model with the same parameters as in the request parameters is already available in MLFlow experiments, the Model Runner serves the model and will return the result
+1. If a model with the same parameters as in the request parameters is already available in MLflow experiments, the Model Runner serves the model and will return the result
 2. If the model is not available for the requested parameters:
     1. Prediction service issues a request to the Training Service to train the model.
     2. Training model returns a **run id**, used to identify the request

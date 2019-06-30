@@ -4,5 +4,8 @@
     "prettier.eslintIntegration": true,
     "prettier.tabWidth": 4,
     "python.linting.pylintEnabled": true,
-    "cSpell.words": ["Databricks"]
+    "cSpell.words": [
+        "Databricks",
+        "MLflow"
+    ]
 }
