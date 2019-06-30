@@ -102,7 +102,7 @@ After setting the values in the `values.yaml` file:
 -   Run the following command:
 
     ```bash
-    helm install ShortLivedMLModels -f ShortLivedMLModels\values.yaml --name=demo
+    helm install OnDemandMLflowTrainAndServe -f OnDemandMLflowTrainAndServe\values.yaml --name=demo
     ```
 
 This will deploy the services into the Kubernetes cluster.
@@ -114,7 +114,7 @@ Please note that the Prediction service is the entry point of this application, 
 If there is a need to make changes to any of the values in the `values.yaml`, make the changes and run the following command:
 
 ```bash
-helm upgrade demo ShortLivedMLModels --recreate-pods --reset-values --force --values ShortLivedMLModels\values.yaml
+helm upgrade demo OnDemandMLflowTrainAndServe --recreate-pods --reset-values --force --values OnDemandMLflowTrainAndServe\values.yaml
 ```
 
 You can also set the values that you need to change inline, by adding `--set var1=value1,var2=value2` at the end of the command.
