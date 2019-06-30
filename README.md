@@ -1,6 +1,6 @@
 # Serving On-Demand Machine Learning Models with MLflow
 
-[![Build Status](https://dev.azure.com/csedevil/short-lived-mlflow/_apis/build/status/microsoft.ShortLivedMLFlowModels?branchName=master)](https://dev.azure.com/csedevil/short-lived-mlflow/_build/latest?definitionId=130&branchName=master)
+[![Build Status](https://dev.azure.com/csedevil/short-lived-mlflow/_apis/build/status/microsoft.OnDemandMLflowTrainAndServe?branchName=master)](https://dev.azure.com/csedevil/short-lived-mlflow/_build/latest?definitionId=131&branchName=master)
 
 A solution for on-demand training and serving of Machine Learning models, using [Azure Databricks](https://docs.azuredatabricks.net/getting-started/index.html) and [MLflow](https://docs.azuredatabricks.net/applications/mlflow/index.html).
 
