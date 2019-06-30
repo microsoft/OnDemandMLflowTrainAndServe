@@ -1,0 +1,32 @@
+pr:
+  branches:
+    include:
+      - '*'    
+  paths:    
+    exclude:
+      - '*.md'  
+name: $(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
+jobs:
+  - job: Build
+    displayName: Build images
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:                        
+      - task: Docker@1
+        displayName: 'Build prediction image'
+        inputs:          
+          dockerFile: 'prediction/**/Dockerfile'
+          imageName: 'prediction:$(Build.BuildNumber)'
+
+      - task: Docker@1
+        displayName: 'Build model-runner image'
+        inputs:          
+          dockerFile: 'model-runner/**/Dockerfile'
+          imageName: 'model-runner:$(Build.BuildNumber)'          
+
+      - task: Docker@1
+        displayName: 'Build training image'
+        inputs:          
+          dockerFile: 'training/**/dockerfile'
+          imageName: 'training:$(Build.BuildNumber)'

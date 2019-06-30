@@ -1,0 +1,64 @@
+{{ $name := .Values.prediction.name }}
+{{ $replicas := .Values.replicas }}
+{{ $image := printf "%s/%s:%s" .Values.repository .Values.prediction.dockerImage.name .Values.imagesTag }}
+{{ $trainingHost := printf "http://%s-service" .Values.training.name }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $name }}
+      tier: backend
+  replicas: {{ $replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+        tier: backend
+    spec:
+      containers:
+        - name: {{ $name }}
+          image: {{ $image }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            timeoutSeconds: 5
+          env:
+            - name: TRAINING_SERVICE_HOST
+              value: {{ $trainingHost }}
+            - name: SERVICE_NAME
+              value: {{ $name }}
+            - name: TRAINING_SERVICE_PORT
+              value: "80"
+            - name: TRAINING_SERVICE_API_TRAIN_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $name }}-config
+                  key: TRAINING_SERVICE_API_TRAIN_PATH
+            - name: TRAINING_REQUESTS_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $name }}-config
+                  key: TRAINING_REQUESTS_TIMEOUT
+            - name: MLFLOW_MODELS_MAPPING
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $name }}-config
+                  key: MLFLOW_MODELS_MAPPING
+            - name: APP_INSIGHTS_INSTRUMENTATION_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: global-config
+                  key: APP_INSIGHTS_INSTRUMENTATION_KEY

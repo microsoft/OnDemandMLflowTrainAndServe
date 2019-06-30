@@ -1,0 +1,23 @@
+{
+    "env": {
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "extends": "airbnb-base",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "plugins": ["prettier"],
+    "rules": {
+        "linebreak-style": [0, "error", "windows"],
+        "indent": ["error", 4],
+        "prettier.singleQuote": true,
+        "prettier.eslintIntegration": true,
+        "prettier.tabWidth": 4
+    }
+}

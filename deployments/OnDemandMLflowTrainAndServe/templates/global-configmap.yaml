@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: global-config
+data:
+  DATABRICKS_WORKSPACE_URL: {{ .Values.global.DATABRICKS_WORKSPACE_URL | quote }}
+  APP_INSIGHTS_INSTRUMENTATION_KEY: {{ .Values.global.APP_INSIGHTS_INSTRUMENTATION_KEY | quote }}

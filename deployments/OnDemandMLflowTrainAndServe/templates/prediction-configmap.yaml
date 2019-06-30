@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.prediction.name }}-config
+data:
+  TRAINING_SERVICE_API_TRAIN_PATH: {{ .Values.prediction.TRAINING_SERVICE_API_TRAIN_PATH | quote }}
+  TRAINING_REQUESTS_TIMEOUT: {{ .Values.prediction.TRAINING_REQUESTS_TIMEOUT | quote }}
+  MLFLOW_MODELS_MAPPING: |-
+    {
+    {{- range $key, $value := .Values.modelRunner.MLFlowModels }}
+    {{- $modelName := $value.MODEL_NAME | lower }}
+    "{{ $modelName }}": {"model_service_port":"80", "model_service_host":"http://{{ $modelName }}-service"},
+    {{- end }}
+    "timeout": 1000, "prediction_url_path": "/predict"}

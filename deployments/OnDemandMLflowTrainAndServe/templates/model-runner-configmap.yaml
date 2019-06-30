@@ -1,0 +1,21 @@
+{{ $MLFlowServerAPIPrefix := .Values.modelRunner.MLFLOW_SERVER_API_PREFIX }}
+{{ $MLFlowServerSearchPath := .Values.modelRunner.MLFLOW_SERVER_SEARCH_PATH }}
+{{ $MLFlowRequestTimeout := .Values.modelRunner.MLFLOW_REQUESTS_TIMEOUT }}
+{{ $modelsRelativePath := .Values.modelRunner.MODELS_RELATIVE_PATH }}
+
+{{- range $key, $value := .Values.modelRunner.MLFlowModels }}
+{{ $modelName := $value.MODEL_NAME | lower }}
+{{ $experimentId := $value.EXPERIMENT_ID }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $modelName }}-config
+data:
+  MLFLOW_EXPERIMENT_ID: {{ $experimentId | quote }}
+  MODEL_NAME: {{ $modelName | quote }}
+  MLFLOW_SERVER_API_PREFIX: {{ $MLFlowServerAPIPrefix | quote }}
+  MLFLOW_SERVER_SEARCH_PATH: {{ $MLFlowServerSearchPath | quote }}
+  MLFLOW_REQUESTS_TIMEOUT: {{ $MLFlowRequestTimeout | quote }}
+  MODELS_RELATIVE_PATH: {{ $modelsRelativePath | quote }}
+---
+{{- end }}

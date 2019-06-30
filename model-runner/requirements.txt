@@ -1,0 +1,11 @@
+Flask==0.12.3
+requests
+numpy==1.15.2
+scipy==1.2.0
+cloudpickle==0.6.1
+mlflow==0.9.0
+pandas==0.23.4
+databricks-cli
+applicationinsights==0.11.9
+environs
+Werkzeug==0.11.15
